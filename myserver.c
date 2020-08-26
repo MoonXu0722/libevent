@@ -27,6 +27,8 @@ void read_cb (int fd, short events, void *arg)
 	for (int i=0; i<strlen(msg); i++)
 		msg[i] = toupper(msg[i]);
 	//printf("after trans:%s\n", msg);
+	////如果第一个连接没处理完后面的连接会等待，直到第一个连接处理完位置。这个对于比较复杂的处理还是要用多线程
+	sleep(20);
 	write(fd, msg, strlen(msg));	
 }
 
@@ -67,7 +69,7 @@ int create_tcp_socket (const char *ip, short port, int num)
 
 int main ()
 {
-	int fd = create_tcp_socket("192.168.233.179", 8888, 10);
+	int fd = create_tcp_socket("192.168.233.179", 8888, 10000);
 	if (fd == -1)
 		sys_err("socket");
 	struct event_base *base = event_init();
